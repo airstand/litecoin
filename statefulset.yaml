@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: litecoin
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: litecoin
+  namespace: litecoin
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: litecoin
+  name: litecoin
+  labels: &litecoin-labels
+    app: litecoin
+    component: daemon
+    version: '0.17.1'
+spec:
+  selector:
+    matchLabels: *litecoin-labels
+  serviceName: litecoin
+  replicas: 1
+  template:
+    metadata:
+      labels: *litecoin-labels
+    spec:
+      serviceAccountName: litecoin
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      tolerations:
+      - key: preemptible
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+      containers:
+        - name: main
+          image: airstand/litecoin:0.17.1
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: litecoin-data
+            mountPath: "/home/litecoin/.litecoin"
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              cpu: 0.5
+              memory: 256Mi
+          readinessProbe:
+            tcpSocket:
+              port: 9333
+            initialDelaySeconds: 5
+            timeoutSeconds: 3
+            periodSeconds: 3
+  volumeClaimTemplates:
+    - metadata:
+        name: litecoin-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: standard
+        resources:
+          requests:
+            storage: 10Gi
