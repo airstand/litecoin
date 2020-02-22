@@ -8,7 +8,7 @@ This repository contains everything that you need to run Litecoin in Docker and 
 
 
 ## Dockerfile
-Multistage build is picked up as approach. The main reason for this is because I do not want to have everything installed during the build process in the image that will run in Kubernetes. The first image (packager) is built with the single RUN approach. It is because the version of the Litecoin is not going to be change and I am not going to persist different layers for cache purposes. Using `sha256sum -c --strict -` will fail the whole build process if return error. The same will apply for running `python3 shasum.py`.
+Multistage build is picked up as approach. The main reason for this is because I do not want to have everything installed during the build process in the image which will run in Kubernetes. The first image (packager) is built with the single RUN approach. It is because the version of the Litecoin is not going to be change and I am not going to persist different layers for cache purposes. Using `sha256sum -c --strict -` will fail the whole build process if return error. The same will apply for running `python3 shasum.py`.
 
 Build it on your computer - `docker build -t litecoin:0.17.1 .`
 
