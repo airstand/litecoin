@@ -9,7 +9,7 @@ properties([
 ])
 
 throttle([]) {
-  node("dev") {
+  node() {
     timestamps {
       try {
 
@@ -18,7 +18,7 @@ throttle([]) {
         stage('Build') {
           sh """
             docker build -t ${params.image_repo_tag}:0.17.1 .
-            docker push ${params.image_repo_tag}:0.17.1 || true
+            docker push ${params.image_repo_tag}:0.17.1
           """
         }
 
