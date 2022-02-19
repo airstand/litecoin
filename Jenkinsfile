@@ -1,4 +1,4 @@
-def litecoin_repo = 'https://github.com/airstand/litecoin.git'
+def litecoin_repo = 'git@github.com:airstand/litecoin.git'
 
 properties([
   parameters([
@@ -17,8 +17,8 @@ throttle([]) {
 
         stage('Build') {
           sh """
-            docker build -t ${params.image_repo_tag}:0.17.1 .
-            docker push ${params.image_repo_tag}:0.17.1
+            docker build -t ${params.image_repo_tag}:0.18.1 .
+            docker push ${params.image_repo_tag}:0.18.1
           """
         }
 
